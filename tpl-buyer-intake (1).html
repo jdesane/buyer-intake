@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TPL Collective | New Buyer Intake</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #0a0a0f;
+    --surface:    #12121a;
+    --surface2:   #1a1a26;
+    --border:     #2a2a3d;
+    --text:       #e8e8f0;
+    --muted:      #8888aa;
+    --dim:        #55556a;
+    --accent:     #6c63ff;
+    --accent-hi:  #8b85ff;
+    --accent-bg:  rgba(108,99,255,0.12);
+    --accent-br:  rgba(108,99,255,0.3);
+    --gold:       #f0c040;
+    --gold-bg:    rgba(240,192,64,0.10);
+    --gold-br:    rgba(240,192,64,0.25);
+    --green:      #34d399;
+    --red:        #f87171;
+    --white:      #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(108,99,255,0.14) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(108,99,255,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .shell {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 80px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .logo-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .logo-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-br);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent-hi);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-hi);
+    animation: pulse 2s infinite;
+  }
+
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 7vw, 62px);
+    letter-spacing: 2px;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+
+  .header h1 .gold { color: var(--gold); }
+
+  .header p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s 0.08s ease both;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+    transition: color 0.3s;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .progress-label.active { color: var(--accent-hi); }
+  .progress-label.done   { color: var(--accent); opacity: 0.5; }
+
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 8px rgba(108,99,255,0.5);
+  }
+
+  .step-counter {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--dim);
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 680px;
+    background: linear-gradient(145deg, #13132a, #0f0f1f);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 44px 48px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s 0.12s ease both;
+    box-shadow: 0 20px 60px rgba(108,99,255,0.1);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.7;
+  }
+
+  .step { display: none; }
+  .step.active { display: block; animation: fadeUp 0.35s ease both; }
+
+  .step-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-hi);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 10px;
+    opacity: 0.7;
+    display: block;
+  }
+
+  .step-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .field-grid { display: grid; gap: 16px; margin-bottom: 16px; }
+  .field-grid.two   { grid-template-columns: 1fr 1fr; }
+  .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  .field label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .field label .req { color: var(--red); margin-left: 2px; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field select option { background: var(--surface2); color: var(--text); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--dim); }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--accent-br);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.08);
+  }
+
+  .field textarea { resize: vertical; min-height: 100px; line-height: 1.55; }
+
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .pill {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+
+  .pill:hover { border-color: var(--accent-br); color: var(--text); }
+
+  .pill.selected {
+    background: var(--accent-bg);
+    border-color: var(--accent-br);
+    color: var(--accent-hi);
+    font-weight: 500;
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace;
+    display: block;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s;
+  }
+
+  .toggle-row:hover { border-color: var(--accent-br); }
+
+  .toggle-label-text { font-size: 14px; color: var(--text); flex: 1; }
+  .toggle-sub-text   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .toggle-switch {
+    width: 40px; height: 22px;
+    background: var(--border);
+    border-radius: 100px;
+    position: relative;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: var(--dim);
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .toggle-switch.on { background: var(--accent-bg); border: 1px solid var(--accent-br); }
+  .toggle-switch.on::after { transform: translateX(18px); background: var(--accent-hi); }
+
+  .co-buyer-fields { margin-top: 16px; display: none; }
+  .co-buyer-fields.show { display: block; }
+
+  .range-wrap { padding: 4px 0; }
+
+  .range-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .range-display strong {
+    font-family: 'DM Mono', monospace;
+    color: var(--gold);
+    font-size: 17px;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent-hi);
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.2), 0 0 10px rgba(108,99,255,0.4);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+    justify-content: flex-end;
+  }
+
+  .btn {
+    padding: 12px 26px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent-br); color: var(--text); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--white);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 32px rgba(108,99,255,0.3);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hi);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(108,99,255,0.4);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .field-error { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error textarea { border-color: rgba(248,113,113,0.4); }
+  .field.has-error .field-error { display: block; }
+
+  .loading-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,10,15,0.92);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  .loading-overlay.show { display: flex; }
+
+  .loading-ring {
+    width: 54px; height: 54px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent-hi);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    box-shadow: 0 0 20px rgba(108,99,255,0.3);
+  }
+
+  .loading-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--accent-hi);
+  }
+
+  .loading-sub { font-size: 13px; color: var(--muted); }
+
+  #results-view { display: none; }
+  #results-view.show { display: block; }
+
+  .results-header {
+    text-align: center;
+    padding: 0 0 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .success-badge {
+    width: 64px; height: 64px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 24px rgba(52,211,153,0.12);
+  }
+
+  .results-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .results-header p { font-size: 14px; color: var(--muted); }
+
+  .summary-card {
+    width: 100%; max-width: 680px;
+    background: linear-gradient(145deg, #13132a, #0f0f1f);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s 0.1s ease both;
+  }
+
+  .summary-card-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .summary-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+  }
+
+  .sh-badge {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.2);
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; }
+
+  .summary-item {
+    padding: 13px 24px;
+    border-bottom: 1px solid rgba(42,42,61,0.7);
+    border-right: 1px solid rgba(42,42,61,0.7);
+  }
+
+  .summary-item:nth-child(even) { border-right: none; }
+  .summary-item.full { grid-column: 1 / -1; border-right: none; }
+
+  .si-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .si-value { font-size: 14px; color: var(--text); line-height: 1.4; }
+
+  .ai-brief-card {
+    width: 100%; max-width: 680px;
+    background: linear-gradient(145deg, #13132a, #0f0f1f);
+    border: 1px solid var(--accent-br);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s 0.2s ease both;
+    position: relative;
+    box-shadow: 0 16px 48px rgba(108,99,255,0.1);
+  }
+
+  .ai-brief-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .ai-brief-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--accent-br);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ai-brief-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: var(--accent-hi);
+  }
+
+  .ai-tag {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent-hi);
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .ai-brief-body {
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    white-space: pre-wrap;
+    font-style: italic;
+  }
+
+  .ai-brief-body.ready { color: var(--text); font-style: normal; }
+
+  .what-next {
+    width: 100%; max-width: 680px;
+    background: linear-gradient(145deg, #13132a, #0f0f1f);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    animation: fadeUp 0.4s 0.3s ease both;
+  }
+
+  .what-next h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: var(--white);
+  }
+
+  .next-steps { display: flex; flex-direction: column; gap: 14px; }
+  .next-step  { display: flex; gap: 14px; align-items: flex-start; }
+
+  .ns-num {
+    width: 26px; height: 26px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-br);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-hi);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .ns-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .ns-text strong { color: var(--text); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 28px 20px; }
+    .field-grid.two   { grid-template-columns: 1fr; }
+    .field-grid.three { grid-template-columns: 1fr 1fr; }
+    .summary-grid     { grid-template-columns: 1fr; }
+    .summary-item     { border-right: none; }
+    .btn-row          { flex-direction: column-reverse; }
+    .btn              { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title">Building Buyer Profile…</div>
+  <div class="loading-sub">Our AI is reviewing your answers</div>
+</div>
+
+<div class="shell">
+  <div id="form-view">
+
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo-dot"></div>
+        <span class="logo-wordmark">TPL COLLECTIVE</span>
+        <div class="logo-dot"></div>
+      </div>
+      <div class="header-eyebrow">
+        <div class="eyebrow-dot"></div>
+        New Buyer Profile
+      </div>
+      <h1>Let's Find Your<br><span class="gold">Perfect Home.</span></h1>
+      <p>Take a few minutes to share your goals. This helps us prepare everything before our first conversation — so we hit the ground running.</p>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span class="progress-label active" id="pl-1">Contact</span>
+        <span class="progress-label" id="pl-2">Financing</span>
+        <span class="progress-label" id="pl-3">Search</span>
+        <span class="progress-label" id="pl-4">Timeline</span>
+        <span class="progress-label" id="pl-5">About You</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:20%"></div>
+      </div>
+      <div class="step-counter" id="stepCounter">01 / 05</div>
+    </div>
+
+    <div class="card">
+
+      <!-- Step 1 -->
+      <div class="step active" id="step-1">
+        <span class="step-tag">Step 01</span>
+        <div class="step-title">CONTACT INFO</div>
+        <div class="step-desc">Let's start with how to reach you and who's on this home search.</div>
+
+        <div class="field-grid two">
+          <div class="field" id="f-firstName">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Joe">
+            <div class="field-error">Required</div>
+          </div>
+          <div class="field" id="f-lastName">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Smith">
+            <div class="field-error">Required</div>
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field" id="f-phone">
+            <label>Phone <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="(561) 555-0123">
+            <div class="field-error">Enter a valid phone number</div>
+          </div>
+          <div class="field" id="f-email">
+            <label>Email <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="joe@email.com">
+            <div class="field-error">Enter a valid email</div>
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field">
+            <label>Preferred Contact Method</label>
+            <select id="contactMethod">
+              <option value="">Select…</option>
+              <option>Phone call</option>
+              <option>Text message</option>
+              <option>Email</option>
+              <option>Any works</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Best Time to Reach You</label>
+            <select id="bestTime">
+              <option value="">Select…</option>
+              <option>Morning (8am–12pm)</option>
+              <option>Afternoon (12pm–5pm)</option>
+              <option>Evening (5pm–8pm)</option>
+              <option>Anytime</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <span class="section-label">Co-Buyer</span>
+
+        <div class="toggle-row" onclick="toggleCoBuyer()">
+          <div>
+            <div class="toggle-label-text">Buying with a partner, spouse, or co-borrower?</div>
+            <div class="toggle-sub-text">We'll collect their info too</div>
+          </div>
+          <div class="toggle-switch" id="coBuyerSwitch"></div>
+        </div>
+
+        <div class="co-buyer-fields" id="coBuyerFields">
+          <div class="field-grid two" style="margin-top:0">
+            <div class="field">
+              <label>Co-Buyer First Name</label>
+              <input type="text" id="coFirstName" placeholder="Jane">
+            </div>
+            <div class="field">
+              <label>Co-Buyer Last Name</label>
+              <input type="text" id="coLastName" placeholder="Smith">
+            </div>
+          </div>
+          <div class="field-grid two">
+            <div class="field">
+              <label>Co-Buyer Phone</label>
+              <input type="tel" id="coPhone" placeholder="(561) 555-0456">
+            </div>
+            <div class="field">
+              <label>Co-Buyer Email</label>
+              <input type="email" id="coEmail" placeholder="jane@email.com">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goNext(1)">Financing →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step" id="step-2">
+        <span class="step-tag">Step 02</span>
+        <div class="step-title">FINANCING</div>
+        <div class="step-desc">Understanding your financing helps us move fast when the right home shows up.</div>
+
+        <div class="field">
+          <label>Pre-approval status</label>
+          <div class="pill-group" id="preApprovedGroup">
+            <div class="pill" onclick="selectPill(this,'preApprovedGroup','preApproved','Yes')">Yes — I have a letter</div>
+            <div class="pill" onclick="selectPill(this,'preApprovedGroup','preApproved','In progress')">In progress</div>
+            <div class="pill" onclick="selectPill(this,'preApprovedGroup','preApproved','No – need a lender')">Need a lender referral</div>
+            <div class="pill" onclick="selectPill(this,'preApprovedGroup','preApproved','Cash buyer')">Cash buyer 💵</div>
+          </div>
+          <input type="hidden" id="preApproved">
+        </div>
+
+        <div id="lenderFields" style="display:none;margin-top:16px;">
+          <div class="field-grid two">
+            <div class="field">
+              <label>Lender / Bank</label>
+              <input type="text" id="lenderName" placeholder="e.g. Wells Fargo, local broker…">
+            </div>
+            <div class="field">
+              <label>Loan Officer</label>
+              <input type="text" id="loanOfficer" placeholder="Optional">
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Loan Type</label>
+          <div class="pill-group" id="loanTypeGroup">
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','Conventional')">Conventional</div>
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','FHA')">FHA</div>
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','VA')">VA</div>
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','USDA')">USDA</div>
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','Cash')">Cash</div>
+            <div class="pill" onclick="selectPill(this,'loanTypeGroup','loanType','Not sure yet')">Not sure yet</div>
+          </div>
+          <input type="hidden" id="loanType">
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Purchase Budget</label>
+          <div class="range-wrap">
+            <div class="range-display">
+              <span>Drag to set</span>
+              <strong id="budgetDisplay">$400,000</strong>
+              <span>&nbsp;</span>
+            </div>
+            <input type="range" id="budgetSlider" min="100000" max="2000000" step="25000" value="400000" oninput="updateBudget(this.value)">
+            <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;">
+              <span>$100k</span><span>$2M+</span>
+            </div>
+          </div>
+          <input type="hidden" id="budget" value="400000">
+        </div>
+
+        <div class="field" style="margin-top:18px;">
+          <label>Down Payment</label>
+          <div class="pill-group" id="downPayGroup">
+            <div class="pill" onclick="selectPill(this,'downPayGroup','downPay','Under 5%')">Under 5%</div>
+            <div class="pill" onclick="selectPill(this,'downPayGroup','downPay','5–10%')">5–10%</div>
+            <div class="pill" onclick="selectPill(this,'downPayGroup','downPay','10–20%')">10–20%</div>
+            <div class="pill" onclick="selectPill(this,'downPayGroup','downPay','20%+')">20%+</div>
+            <div class="pill" onclick="selectPill(this,'downPayGroup','downPay','All cash')">All cash</div>
+          </div>
+          <input type="hidden" id="downPay">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="goNext(2)">The Search →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step" id="step-3">
+        <span class="step-tag">Step 03</span>
+        <div class="step-title">THE SEARCH</div>
+        <div class="step-desc">Tell us what you're looking for so we can start curating homes before we even meet.</div>
+
+        <div class="field" id="f-targetAreas">
+          <label>Target Cities / Areas <span class="req">*</span></label>
+          <input type="text" id="targetAreas" placeholder="e.g. Wellington, Royal Palm Beach, Palm Beach Gardens…">
+          <div class="field-error">Please enter at least one area</div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Home Type</label>
+          <div class="pill-group">
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">Single Family</div>
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">Townhome</div>
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">Condo</div>
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">Villa</div>
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">55+ Community</div>
+            <div class="pill" onclick="toggleMultiPill(this,'homeType')">Investment Property</div>
+          </div>
+        </div>
+
+        <div class="field-grid three" style="margin-top:16px;">
+          <div class="field">
+            <label>Min Beds</label>
+            <select id="minBeds">
+              <option value="">Any</option>
+              <option>2+</option><option>3+</option><option>4+</option><option>5+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Min Baths</label>
+            <select id="minBaths">
+              <option value="">Any</option>
+              <option>1+</option><option>2+</option><option>3+</option><option>4+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Garage</label>
+            <select id="garage">
+              <option value="">Any</option>
+              <option>1 car</option><option>2 car</option><option>3+ car</option><option>Not needed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Must-Have Features</label>
+          <div class="pill-group">
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Pool</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Waterfront</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Gated Community</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">HOA-Free</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">New Construction</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Large Yard</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Home Office</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Guest Suite</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Boat/RV Parking</div>
+            <div class="pill" onclick="toggleMultiPill(this,'mustHave')">Impact Windows</div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Deal-Breakers</label>
+          <input type="text" id="dealBreakers" placeholder="e.g. No HOA over $300/mo, no flood zone…">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="goNext(3)">Timeline →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step" id="step-4">
+        <span class="step-tag">Step 04</span>
+        <div class="step-title">TIMELINE</div>
+        <div class="step-desc">Knowing your timeline lets us calibrate how aggressively we move.</div>
+
+        <div class="field">
+          <label>When do you need to be in?</label>
+          <div class="pill-group" id="moveInGroup">
+            <div class="pill" onclick="selectPill(this,'moveInGroup','moveIn','ASAP')">ASAP — already urgent</div>
+            <div class="pill" onclick="selectPill(this,'moveInGroup','moveIn','1–3 months')">1–3 months</div>
+            <div class="pill" onclick="selectPill(this,'moveInGroup','moveIn','3–6 months')">3–6 months</div>
+            <div class="pill" onclick="selectPill(this,'moveInGroup','moveIn','6–12 months')">6–12 months</div>
+            <div class="pill" onclick="selectPill(this,'moveInGroup','moveIn','Just exploring')">Just exploring</div>
+          </div>
+          <input type="hidden" id="moveIn">
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Current Living Situation</label>
+          <div class="pill-group" id="livingSitGroup">
+            <div class="pill" onclick="selectPill(this,'livingSitGroup','livingSit','Renting')">Renting</div>
+            <div class="pill" onclick="selectPill(this,'livingSitGroup','livingSit','Own – sell first')">Own — need to sell first</div>
+            <div class="pill" onclick="selectPill(this,'livingSitGroup','livingSit','Own – keeping it')">Own — keeping it</div>
+            <div class="pill" onclick="selectPill(this,'livingSitGroup','livingSit','With family/friends')">With family/friends</div>
+            <div class="pill" onclick="selectPill(this,'livingSitGroup','livingSit','Relocating')">Relocating</div>
+          </div>
+          <input type="hidden" id="livingSit">
+        </div>
+
+        <div class="field" id="leaseEndWrap" style="margin-top:16px;display:none;">
+          <label>Lease End Date</label>
+          <input type="month" id="leaseEnd">
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Timeline flexibility</label>
+          <div class="pill-group" id="flexGroup">
+            <div class="pill" onclick="selectPill(this,'flexGroup','flex','Very flexible')">Very flexible</div>
+            <div class="pill" onclick="selectPill(this,'flexGroup','flex','Somewhat flexible')">Somewhat flexible</div>
+            <div class="pill" onclick="selectPill(this,'flexGroup','flex','Firm deadline')">Firm deadline</div>
+          </div>
+          <input type="hidden" id="flex">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
+          <button class="btn btn-primary" onclick="goNext(4)">About You →</button>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step" id="step-5">
+        <span class="step-tag">Step 05</span>
+        <div class="step-title">ABOUT YOU</div>
+        <div class="step-desc">Last step — a few things that help us understand your situation and set expectations.</div>
+
+        <div class="field">
+          <label>Why are you moving?</label>
+          <div class="pill-group">
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Upsizing</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Downsizing</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Job relocation</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Lifestyle change</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Investment / rental</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Starting a family</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">Retirement</div>
+            <div class="pill" onclick="toggleMultiPill(this,'why')">School district</div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Purchased before?</label>
+          <div class="pill-group" id="firstTimeGroup">
+            <div class="pill" onclick="selectPill(this,'firstTimeGroup','firstTime','Yes')">Yes, I've bought before</div>
+            <div class="pill" onclick="selectPill(this,'firstTimeGroup','firstTime','No – first-time buyer')">No — first-time buyer 🎉</div>
+          </div>
+          <input type="hidden" id="firstTime">
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Working with another agent?</label>
+          <div class="pill-group" id="otherAgentGroup">
+            <div class="pill" onclick="selectPill(this,'otherAgentGroup','otherAgent','No')">No</div>
+            <div class="pill" onclick="selectPill(this,'otherAgentGroup','otherAgent','Yes')">Yes</div>
+          </div>
+          <input type="hidden" id="otherAgent">
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>How did you find us?</label>
+          <select id="howHeard">
+            <option value="">Select…</option>
+            <option>Referral from friend/family</option>
+            <option>Social media</option>
+            <option>Google search</option>
+            <option>Zillow / Realtor.com</option>
+            <option>Yard sign</option>
+            <option>Previous client</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Anything else we should know?</label>
+          <textarea id="notes" placeholder="Special circumstances, school districts, pets, accessibility needs, timeline pressures…"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goStep(4)">← Back</button>
+          <button class="btn btn-primary" onclick="submitForm()">Submit Profile ✓</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results-view">
+
+    <div class="results-header">
+      <div class="success-badge">✓</div>
+      <h2>YOU'RE ALL SET.</h2>
+      <p>Your profile has been submitted. Someone from the TPL Collective team will be reaching out shortly to kick off your home buying process.</p>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <span>👤</span>
+        <h3>BUYER PROFILE</h3>
+        <span class="sh-badge">Submitted</span>
+      </div>
+      <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+
+    <div class="ai-brief-card">
+      <div class="ai-brief-header">
+        <span>⚡</span>
+        <h3>AI BUYER BRIEF</h3>
+        <span class="ai-tag">AI Generated</span>
+      </div>
+      <div class="ai-brief-body" id="aiBriefBody">Generating buyer brief…</div>
+    </div>
+
+    <div class="what-next">
+      <h4>WHAT HAPPENS NEXT</h4>
+      <div class="next-steps">
+        <div class="next-step">
+          <div class="ns-num">1</div>
+          <div class="ns-text"><strong>Your profile is being reviewed</strong> — a member of the TPL Collective team will look this over shortly.</div>
+        </div>
+        <div class="next-step">
+          <div class="ns-num">2</div>
+          <div class="ns-text"><strong>Expect a reach out soon</strong> via your preferred contact method to introduce themselves and get your home search started.</div>
+        </div>
+        <div class="next-step">
+          <div class="ns-num">3</div>
+          <div class="ns-text"><strong>We'll start curating homes</strong> matched to your criteria — expect listings before we even sit down.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentStep = 1;
+  const TOTAL = 5;
+  let coBuyer = false;
+  const multiPills = {};
+
+  function updateProgress(step) {
+    document.getElementById('progressFill').style.width = (step / TOTAL * 100) + '%';
+    document.getElementById('stepCounter').textContent = '0' + step + ' / 0' + TOTAL;
+    for (let i = 1; i <= TOTAL; i++) {
+      const el = document.getElementById('pl-' + i);
+      el.className = 'progress-label' + (i === step ? ' active' : i < step ? ' done' : '');
+    }
+  }
+
+  function goStep(n) {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step-' + currentStep).classList.add('active');
+    updateProgress(currentStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goNext(from) {
+    if (!validateStep(from)) return;
+    goStep(from + 1);
+  }
+
+  function validateStep(step) {
+    let ok = true;
+    if (step === 1) ok = req('firstName') & req('lastName') & reqEmail('email') & reqPhone('phone') & ok;
+    if (step === 3) ok = req('targetAreas') & ok;
+    return !!ok;
+  }
+
+  function req(id) {
+    const el = document.getElementById(id);
+    const wrap = document.getElementById('f-' + id);
+    if (!wrap) return true;
+    if (!el.value.trim()) { wrap.classList.add('has-error'); return false; }
+    wrap.classList.remove('has-error'); return true;
+  }
+
+  function reqEmail(id) {
+    const el = document.getElementById(id);
+    const wrap = document.getElementById('f-' + id);
+    if (!wrap) return true;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) { wrap.classList.add('has-error'); return false; }
+    wrap.classList.remove('has-error'); return true;
+  }
+
+  function reqPhone(id) {
+    const el = document.getElementById(id);
+    const wrap = document.getElementById('f-' + id);
+    if (!wrap) return true;
+    if (el.value.replace(/\D/g,'').length < 10) { wrap.classList.add('has-error'); return false; }
+    wrap.classList.remove('has-error'); return true;
+  }
+
+  function toggleCoBuyer() {
+    coBuyer = !coBuyer;
+    document.getElementById('coBuyerSwitch').classList.toggle('on', coBuyer);
+    document.getElementById('coBuyerFields').classList.toggle('show', coBuyer);
+  }
+
+  function selectPill(el, groupId, hiddenId, value) {
+    document.querySelectorAll('#' + groupId + ' .pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(hiddenId).value = value;
+    if (hiddenId === 'preApproved')
+      document.getElementById('lenderFields').style.display = (value === 'Yes' || value === 'In progress') ? 'block' : 'none';
+    if (hiddenId === 'livingSit')
+      document.getElementById('leaseEndWrap').style.display = value === 'Renting' ? 'block' : 'none';
+  }
+
+  function toggleMultiPill(el, key) {
+    if (!multiPills[key]) multiPills[key] = new Set();
+    const label = el.textContent.replace(/[^\w\s\-\/+%]/g,'').trim();
+    if (el.classList.contains('selected')) { el.classList.remove('selected'); multiPills[key].delete(label); }
+    else { el.classList.add('selected'); multiPills[key].add(label); }
+  }
+
+  function updateBudget(val) {
+    document.getElementById('budgetDisplay').textContent = '$' + parseInt(val).toLocaleString();
+    document.getElementById('budget').value = val;
+  }
+
+  function collectData() {
+    return {
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName:  document.getElementById('lastName').value.trim(),
+      phone:     document.getElementById('phone').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      contactMethod: document.getElementById('contactMethod').value,
+      bestTime:  document.getElementById('bestTime').value,
+      coBuyer,
+      coFirstName: document.getElementById('coFirstName').value.trim(),
+      coLastName:  document.getElementById('coLastName').value.trim(),
+      coPhone:     document.getElementById('coPhone').value.trim(),
+      coEmail:     document.getElementById('coEmail').value.trim(),
+      preApproved: document.getElementById('preApproved').value,
+      lenderName:  document.getElementById('lenderName').value.trim(),
+      loanType:    document.getElementById('loanType').value,
+      budget:      '$' + parseInt(document.getElementById('budget').value).toLocaleString(),
+      downPay:     document.getElementById('downPay').value,
+      targetAreas: document.getElementById('targetAreas').value.trim(),
+      homeTypes:   multiPills['homeType'] ? [...multiPills['homeType']].join(', ') : '',
+      minBeds:     document.getElementById('minBeds').value,
+      minBaths:    document.getElementById('minBaths').value,
+      garage:      document.getElementById('garage').value,
+      mustHave:    multiPills['mustHave'] ? [...multiPills['mustHave']].join(', ') : '',
+      dealBreakers:document.getElementById('dealBreakers').value.trim(),
+      moveIn:      document.getElementById('moveIn').value,
+      livingSit:   document.getElementById('livingSit').value,
+      leaseEnd:    document.getElementById('leaseEnd').value,
+      flex:        document.getElementById('flex').value,
+      why:         multiPills['why'] ? [...multiPills['why']].join(', ') : '',
+      firstTime:   document.getElementById('firstTime').value,
+      otherAgent:  document.getElementById('otherAgent').value,
+      howHeard:    document.getElementById('howHeard').value,
+      notes:       document.getElementById('notes').value.trim()
+    };
+  }
+
+  function buildSummary(d) {
+    const items = [
+      ['Buyer Name',    d.firstName + ' ' + d.lastName],
+      ['Phone',         d.phone],
+      ['Email',         d.email],
+      ['Contact Pref',  d.contactMethod || '—'],
+      ['Best Time',     d.bestTime || '—'],
+      ['Co-Buyer',      d.coBuyer ? d.coFirstName + ' ' + d.coLastName : 'None'],
+      ['Pre-Approved',  d.preApproved || '—'],
+      ['Loan Type',     d.loanType || '—'],
+      ['Budget',        d.budget],
+      ['Down Payment',  d.downPay || '—'],
+      ['Target Areas',  d.targetAreas, true],
+      ['Home Type(s)',  d.homeTypes || '—', true],
+      ['Beds / Baths',  (d.minBeds||'Any') + ' beds / ' + (d.minBaths||'Any') + ' baths'],
+      ['Garage',        d.garage || '—'],
+      ['Must-Haves',    d.mustHave || '—', true],
+      ['Deal-Breakers', d.dealBreakers || '—', true],
+      ['Timeline',      d.moveIn || '—'],
+      ['Living Sit.',   d.livingSit || '—'],
+      ['Flexibility',   d.flex || '—'],
+      ['Moving Because',d.why || '—', true],
+      ['First-Time',    d.firstTime || '—'],
+      ['Other Agent',   d.otherAgent || '—'],
+      ['Found Us Via',  d.howHeard || '—'],
+      ['Notes',         d.notes || '—', true],
+    ];
+    const grid = document.getElementById('summaryGrid');
+    grid.innerHTML = '';
+    items.forEach(([label, value, full]) => {
+      const div = document.createElement('div');
+      div.className = 'summary-item' + (full ? ' full' : '');
+      div.innerHTML = '<div class="si-label">' + label + '</div><div class="si-value">' + value + '</div>';
+      grid.appendChild(div);
+    });
+  }
+
+  async function generateAIBrief(d) {
+    const prompt = `You are a real estate assistant for TPL Collective, a top Palm Beach County team on LPT Realty. A new buyer submitted their intake form. Write a concise Buyer Brief for agent Joe DeSane to read in under 60 seconds before calling. Clean paragraphs only — no bullets, no headers. Cover: who this buyer is, their financial readiness, what/where they're searching, timeline/urgency, and any flags or talking points Joe should know. 150–200 words. Start directly.
+
+Name: ${d.firstName} ${d.lastName} | Email: ${d.email} | Phone: ${d.phone}
+Co-Buyer: ${d.coBuyer ? d.coFirstName+' '+d.coLastName : 'None'}
+Pre-Approved: ${d.preApproved} | Lender: ${d.lenderName||'N/A'} | Loan: ${d.loanType}
+Budget: ${d.budget} | Down: ${d.downPay}
+Areas: ${d.targetAreas} | Types: ${d.homeTypes}
+Beds/Baths: ${d.minBeds}/${d.minBaths} | Garage: ${d.garage}
+Must-Haves: ${d.mustHave} | Deal-Breakers: ${d.dealBreakers}
+Timeline: ${d.moveIn} | Situation: ${d.livingSit} | Flex: ${d.flex}
+Moving Because: ${d.why} | First-Time: ${d.firstTime} | Other Agent: ${d.otherAgent}
+Notes: ${d.notes}`;
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text||'').join('') || 'Unable to generate brief.';
+      const el = document.getElementById('aiBriefBody');
+      el.textContent = text;
+      el.classList.add('ready');
+    } catch {
+      document.getElementById('aiBriefBody').textContent = 'AI brief unavailable — review the summary above.';
+    }
+  }
+
+  const SUPABASE_URL  = 'https://zyonidiybzrgklrmalbt.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5b25pZGl5YnpyZ2tscm1hbGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTY5NzUsImV4cCI6MjA4ODI5Mjk3NX0.5See-qjLkXA4CoJi9tNfcLAX_cdvZhPaxw8iViKM8S8';
+
+  async function saveToSupabase(d) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/buyer_intake_submissions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          first_name:       d.firstName,
+          last_name:        d.lastName,
+          phone:            d.phone,
+          email:            d.email,
+          contact_method:   d.contactMethod,
+          best_time:        d.bestTime,
+          has_co_buyer:     d.coBuyer,
+          co_first_name:    d.coFirstName,
+          co_last_name:     d.coLastName,
+          co_phone:         d.coPhone,
+          co_email:         d.coEmail,
+          pre_approved:     d.preApproved,
+          lender_name:      d.lenderName,
+          loan_type:        d.loanType,
+          budget:           d.budget,
+          down_payment:     d.downPay,
+          target_areas:     d.targetAreas,
+          home_types:       d.homeTypes,
+          min_beds:         d.minBeds,
+          min_baths:        d.minBaths,
+          garage:           d.garage,
+          must_haves:       d.mustHave,
+          deal_breakers:    d.dealBreakers,
+          move_in_timeline: d.moveIn,
+          living_situation: d.livingSit,
+          lease_end:        d.leaseEnd || null,
+          flexibility:      d.flex,
+          reason_moving:    d.why,
+          first_time_buyer: d.firstTime,
+          other_agent:      d.otherAgent,
+          how_heard:        d.howHeard,
+          notes:            d.notes,
+          status:           'new'
+        })
+      });
+      if (!res.ok) console.error('Supabase save failed:', res.status, await res.text());
+    } catch(err) {
+      console.error('Supabase error:', err);
+    }
+  }
+
+  async function submitForm() {
+    if (!validateStep(5)) return;
+    const data = collectData();
+    document.getElementById('loadingOverlay').classList.add('show');
+    await saveToSupabase(data);
+    await new Promise(r => setTimeout(r, 800));
+    document.getElementById('loadingOverlay').classList.remove('show');
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('results-view').classList.add('show');
+    buildSummary(data);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    generateAIBrief(data);
+  }
+</script>
+</body>
+</html>
