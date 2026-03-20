@@ -1351,11 +1351,67 @@ Notes: ${d.notes}`;
     }
   }
 
+  const SUPABASE_URL  = 'https://zyonidiybzrgklrmalbt.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5b25pZGl5YnpyZ2tscm1hbGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTY5NzUsImV4cCI6MjA4ODI5Mjk3NX0.5See-qjLkXA4CoJi9tNfcLAX_cdvZhPaxw8iViKM8S8';
+
+  async function saveToSupabase(d) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/buyer_intake_submissions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          first_name:       d.firstName,
+          last_name:        d.lastName,
+          phone:            d.phone,
+          email:            d.email,
+          contact_method:   d.contactMethod,
+          best_time:        d.bestTime,
+          has_co_buyer:     d.coBuyer,
+          co_first_name:    d.coFirstName,
+          co_last_name:     d.coLastName,
+          co_phone:         d.coPhone,
+          co_email:         d.coEmail,
+          pre_approved:     d.preApproved,
+          lender_name:      d.lenderName,
+          loan_type:        d.loanType,
+          budget:           d.budget,
+          down_payment:     d.downPay,
+          target_areas:     d.targetAreas,
+          home_types:       d.homeTypes,
+          min_beds:         d.minBeds,
+          min_baths:        d.minBaths,
+          garage:           d.garage,
+          must_haves:       d.mustHave,
+          deal_breakers:    d.dealBreakers,
+          move_in_timeline: d.moveIn,
+          living_situation: d.livingSit,
+          lease_end:        d.leaseEnd || null,
+          flexibility:      d.flex,
+          reason_moving:    d.why,
+          first_time_buyer: d.firstTime,
+          other_agent:      d.otherAgent,
+          how_heard:        d.howHeard,
+          notes:            d.notes,
+          status:           'new'
+        })
+      });
+      if (!res.ok) console.error('Supabase save failed:', res.status, await res.text());
+    } catch(err) {
+      console.error('Supabase error:', err);
+    }
+  }
+
   async function submitForm() {
     if (!validateStep(5)) return;
     const data = collectData();
     document.getElementById('loadingOverlay').classList.add('show');
-    await new Promise(r => setTimeout(r, 1400));
+    await saveToSupabase(data);
+    await new Promise(r => setTimeout(r, 800));
     document.getElementById('loadingOverlay').classList.remove('show');
     document.getElementById('form-view').style.display = 'none';
     document.getElementById('results-view').classList.add('show');
